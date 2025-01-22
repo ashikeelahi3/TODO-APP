@@ -2,11 +2,18 @@ import React, { useState } from "react";
 import { Alert, FlatList, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+// Define Task Type
+interface Task {
+  id: number;
+  title: string;
+  description: string;
+}
+
 export default function Index() {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [tasks, setTasks] = useState([]);
-  const [taskTitle, setTaskTitle] = useState("");
-  const [taskDescription, setTaskDescription] = useState("");
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [taskTitle, setTaskTitle] = useState<string>("");
+  const [taskDescription, setTaskDescription] = useState<string>("");
 
   const saveTask = () => {
     if (taskTitle.trim() === "" || taskDescription.trim() === "") {
@@ -14,7 +21,7 @@ export default function Index() {
       return;
     }
 
-    const newTask = {
+    const newTask: Task = {
       id: Date.now(),
       title: taskTitle,
       description: taskDescription,
