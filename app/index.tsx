@@ -1,9 +1,33 @@
 import React, { useState } from "react";
-import { Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [tasks, setTasks] = useState([]);
+  const [taskTitle, setTaskTitle] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
+
+  const saveTask = () => {
+    if (taskTitle.trim() === "" || taskDescription.trim() === "") {
+      Alert.alert("Please enter both a title and a description for the task.")
+      return;
+    }
+
+    const newTask = {
+      id: Date.now(),
+      title: taskTitle,
+      description: taskDescription,
+    }
+
+    setTasks([...tasks, newTask]);
+    setTaskTitle("")
+    setTaskDescription("")
+    setModalVisible(false);
+  }
+
+  
+
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       {/* Header Section */}
@@ -15,9 +39,20 @@ export default function Index() {
 
       {/* Task List Placeholder */}
       <View className="flex-1 p-6">
-        <Text className="text-gray-400 text-lg text-center italic">
-          No tasks yet. Add a task to get started!
-        </Text>
+        {tasks.length === 0 ? (<Text className="text-gray-400 text-lg text-center italic">
+          Your task list is empty. Tap the button below to add a new task.
+        </Text>) : (
+          <FlatList
+            data={tasks}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({item}) => (
+              <View className="bg-white p-4 mb-4 rounded-lg shadow-sm">
+                <Text className="text-lg font-bold text-gray-800">{item.title}</Text>
+                <Text className="text-gray-600">{item.description}</Text>
+              </View>
+            )}
+          />
+        )}
       </View>
 
       {/* Add Task Button */}
@@ -50,12 +85,16 @@ export default function Index() {
             {/* Task Title Input */}
             <TextInput
               placeholder="Task Title"
+              value={taskTitle}
+              onChangeText={(text) => setTaskTitle(text)}
               className="border border-gray-300 p-3 rounded-lg mb-4"
             />
 
             {/* Task Description Input */}
             <TextInput
               placeholder="Task Description"
+              value={taskDescription}
+              onChangeText={(text) => setTaskDescription(text)}
               multiline
               className="border border-gray-300 p-3 rounded-lg mb-4"
             />
@@ -70,10 +109,7 @@ export default function Index() {
               </TouchableOpacity>
               <TouchableOpacity 
                 className="bg-blue-600 py-2 px-4 rounded-lg"
-                onPress={() => {
-                  console.log("Save Task")
-                  setModalVisible(false);
-                }}
+                onPress={saveTask}
               >
                 <Text className="text-white font-semibold">Save</Text>
               </TouchableOpacity>
