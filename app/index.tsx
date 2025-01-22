@@ -3,15 +3,39 @@ import { Alert, FlatList, Modal, Text, TextInput, TouchableOpacity, View } from 
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Define Task Type
-interface Task {
+class Task {
   id: number;
   title: string;
   description: string;
+
+  constructor(id: number, title: string, description: string) {
+    this.id = id;
+    this.title = title;
+    this.description = description;
+  }
+}
+
+// TaskManager Class to encapsulate task operations
+class TaskManager {
+  private tasks: Task[];
+
+  constructor() {
+    this.tasks = [];
+  }
+
+  addTask(task: Task): void {
+    this.tasks.push(task)
+  }
+
+  getTasks(): Task[] {
+    return this.tasks;
+  }
 }
 
 export default function Index() {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [taskManager] = useState<TaskManager>(new TaskManager());
+  const [tasks, setTasks] = useState<Task[]>(taskManager.getTasks());
   const [taskTitle, setTaskTitle] = useState<string>("");
   const [taskDescription, setTaskDescription] = useState<string>("");
 
@@ -21,13 +45,9 @@ export default function Index() {
       return;
     }
 
-    const newTask: Task = {
-      id: Date.now(),
-      title: taskTitle,
-      description: taskDescription,
-    }
-
-    setTasks([...tasks, newTask]);
+    const newTask = new Task(Date.now(), taskTitle, taskDescription)
+    taskManager.addTask(newTask);
+    setTasks([...taskManager.getTasks()]);
     setTaskTitle("")
     setTaskDescription("")
     setModalVisible(false);
