@@ -126,3 +126,5 @@ const TaskModal: React.FC<TaskModalProps> = ({
     </Modal>
   )
 }
+
+export default TaskModal;
