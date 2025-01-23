@@ -2,7 +2,7 @@ export class Task {
   id: number;
   title: string;
   description: string;
-  priority: "Low" | "Medium" | "High";
+  priority: "Low" | "Medium" | "High" | "";
   isCompleted: boolean;
   dueDate: Date | null;
 
@@ -10,7 +10,7 @@ export class Task {
     id: number,
     title: string,
     description: string,
-    priority: "Low" | "Medium" | "High" = "Medium",
+    priority: "Low" | "Medium" | "High" | "" = "",
     isCompleted: boolean = false,
     dueDate: Date | null = null
   ) {
