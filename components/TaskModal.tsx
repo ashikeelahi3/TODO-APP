@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Alert,
   Modal,
   Text,
   TextInput,
@@ -41,6 +42,10 @@ const TaskModal: React.FC<TaskModalProps> = ({
   const priorities = ["Low", "Medium", "High"];
 
   const handleSave = () => {
+    if (title.trim() === "" || description.trim() === "") {
+      Alert.alert("Please enter both a title and a description for the task.")
+      return;
+    }
     onSave(title, description, priority, dueDate);
     setTitle("")
     setDescription("")
@@ -55,7 +60,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
       visible={visible}
       onRequestClose={onClose}
     >
-      <View className="flex-1 justify-center items-center bg-blue/50">
+      <View className="flex-1 justify-center items-center bg-black/50">
         <View className="bg-white w-11/12 p-6 rounded-lg shadow-lg">
           <Text className="text-xl font-semibold text-center mb-4">Add/Edit Task</Text>
           <TextInput
@@ -73,15 +78,15 @@ const TaskModal: React.FC<TaskModalProps> = ({
           />    
 
           <View className="mb-4 flex-row justify-around">
-            {priorities.map((priority: any) => (
+            {priorities.map((p: any) => (
               <TouchableOpacity
-                key={priority}
+                key={p}
                 className={`py-2 px-4 rounded-lg ${
-                  priority === priority ? "bg-blue-300" : "bg-gray-300"
+                  priority === p ? "bg-blue-300" : "bg-gray-300"
                 }`}
-                onPress={() => setPriority(priority)}
+                onPress={() => setPriority(p)}
               >
-                <Text className="text-gray-700 font-semibold">{priority}</Text>
+                <Text className="text-gray-700 font-semibold">{p}</Text>
               </TouchableOpacity>
             ))}
           </View>

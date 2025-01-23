@@ -31,13 +31,13 @@ const TaskItem: React.FC<TaskItemPromps> = ({ task, onEdit, onDelete}) => {
     >
       <Text className="text-lg font-bold text-gray-800">{task.title}</Text>
       <Text className="text-gray-600">{task.description}</Text>
-      <Text className="text-gray-600 italic">Priority: {task.priority}</Text>
+      {task.priority && (<Text className="text-gray-600 italic">Priority: {task.priority}</Text>)}
       {task.dueDate && (<Text className="text-gray-600 italic">
         Due Date: {task.dueDate.toDateString()}
       </Text>)}
       <View className="flex-row justify-between mt-2">
         <TouchableOpacity
-          className='bg-green-500 py-2 px-4 rounded-lg'
+          className='bg-blue-500 py-2 px-4 rounded-lg'
           onPress={() => onEdit(task)}
         >
           <Text className="text-white text-center font-semibold">Edit</Text>
