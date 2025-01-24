@@ -1,27 +1,30 @@
 import React from "react";
+import { View, ScrollView } from "react-native";
+import Button from "../components/Button";
+import NoteCard from "../components/NoteCard";
 import { useTheme } from "../hooks/useTheme";
-import { View, Text, Button } from "react-native";
 
-export default function HomeScreen({ navigation }) {
-  const { theme, colors, toggleTheme } = useTheme(); 
+export default function HomeScreen() {
+  const { colors, toggleTheme } = useTheme();
+
+  const notes = [
+    { id: 1, title: "Note 1", description: "This is the first note." },
+    { id: 2, title: "Note 2", description: "This is the second note." },
+  ];
 
   return (
-    <View className="flex-1 items-center justify-center">
-      <Text className="text-lg font-bold">Home Screen</Text>
-      <Button
-        title="Add Note"
-        onPress={() => navigation.navigate("AddNote")}
-      />
-      <Button
-        title="View Note Details"
-        onPress={() => navigation.navigate("NoteDetail")}
-      />
-      <Button title="Toggle Theme" onPress={toggleTheme} color={colors.primary} />
-      <View className="flex-1 justify-center items-center" style={{ backgroundColor: colors.background }}>
-        <Text className="text-lg font-bold" style={{ color: colors.text }}>
-          Current Theme: {theme.toUpperCase()}
-        </Text>
+    <ScrollView style={{ flex: 1, backgroundColor: colors.background, paddingHorizontal: 16 }}>
+      <View style={{ marginBottom: 16 }}>
+        <Button title="Add Note" onPress={() => console.log("Add Note")} />
+        <Button title="Toggle Theme" onPress={toggleTheme} variant="secondary" />
       </View>
-    </View>
+      {notes.map((note) => (
+        <NoteCard
+          key={note.id}
+          title={note.title}
+          description={note.description}
+        />
+      ))}
+    </ScrollView>
   );
 }
