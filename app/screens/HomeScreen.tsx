@@ -11,7 +11,7 @@ export default function HomeScreen({ navigation }: any) {
   const { colors } = useTheme();
   const [notes, setNotes] = useState<Note[]>([]);
 
-  // Fetch notes every time the screen comes into focus
+  // Fetch notes every time the screen comes into focus 
   useFocusEffect(
     useCallback(() => {
       const fetchNotes = async () => {
