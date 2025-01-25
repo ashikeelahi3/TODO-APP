@@ -10,18 +10,20 @@ import { debounce } from "../utils/debounce"; // Debounce utility
 
 export default function AddNoteScreen() {
   const { colors } = useTheme();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [isNewNote, setIsNewNote] = useState(true);
+  const [ID, setID] = useState<string>(Date.now().toString()); // Generate ID once
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const navigation = useNavigation();
 
   // Debounced autosave function
   const autosave = useCallback(
     debounce(async (note: Note) => {
       try {
-        if (isNewNote) {
+        const notes = await NoteService.getNotes();
+        const existingNote = notes.find((n) => n.id === note.id);
+
+        if (!existingNote) {
           await NoteService.addNote(note); // Create a new note
-          setIsNewNote(false); // Mark as an existing note
         } else {
           await NoteService.updateNote(note); // Update the existing note
         }
@@ -33,19 +35,19 @@ export default function AddNoteScreen() {
     []
   );
 
-  // Handle title/description updates with autosave
+  // Trigger autosave when title or description changes
   useEffect(() => {
-    if (title || description) {
-      const newNote: Note = {
-        id: Date.now().toString(),
+    if (title.trim() || description.trim()) {
+      const note: Note = {
+        id: ID, // Use the generated ID
         title,
         description,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      autosave(newNote);
+      autosave(note);
     }
-  }, [title, description]);
+  }, [title, description, ID, autosave]);
 
   // Handle manual save
   const handleSave = async () => {
@@ -54,8 +56,8 @@ export default function AddNoteScreen() {
       return;
     }
 
-    const newNote: Note = {
-      id: Date.now().toString(),
+    const note: Note = {
+      id: ID, // Use the same ID for manual save
       title,
       description,
       createdAt: new Date().toISOString(),
@@ -69,7 +71,7 @@ export default function AddNoteScreen() {
         style: "default",
         onPress: async () => {
           try {
-            await NoteService.addNote(newNote);
+            await NoteService.addNote(note);
             navigation.goBack(); // Navigate back to HomeScreen
           } catch (error: any) {
             Alert.alert("Error", error.message || "An unexpected error occurred");
