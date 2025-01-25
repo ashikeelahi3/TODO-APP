@@ -27,8 +27,25 @@ export default function AddNoteScreen() {
       updatedAt: new Date().toISOString(),
     };
 
-    await NoteService.addNote(newNote);
-    navigation.goBack(); // Navigate back to HomeScreen
+    Alert.alert(
+      "Save Note",
+      "Are you sure you want to save this note?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Save",
+          style: "default",
+          onPress: async () => {
+            try {
+              await NoteService.addNote(newNote);
+              navigation.goBack(); // Navigate back to HomeScreen
+            } catch (err:any){
+              Alert.alert("Error", err.message || "An unexpected error occurred");
+            }
+          }
+        }
+      ]
+    )
   };
 
   return (

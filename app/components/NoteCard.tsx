@@ -25,7 +25,7 @@ export default function NoteCard({ id, title, description, onDelete, onEdit }: N
           style: "destructive",
           onPress: async () => {
             await NoteService.deleteNote(id);
-            onDelete(id); // Call the callback to refresh the notes list
+            onDelete(id);
           },
         },
       ]

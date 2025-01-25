@@ -38,8 +38,25 @@ export default function EditNoteScreen({ route, navigation }: any) {
       updatedAt: new Date().toISOString(),
     };
 
-    await NoteService.updateNote(updatedNote);
-    navigation.goBack(); // Navigate back to HomeScreen
+    Alert.alert(
+          "Save Note",
+          "Are you sure you want to save this note?",
+          [
+            { text: "Cancel", style: "cancel" },
+            {
+              text: "Save",
+              style: "default",
+              onPress: async () => {
+                try {
+                  await NoteService.updateNote(updatedNote);
+                  navigation.goBack(); // Navigate back to HomeScreen
+                } catch (error:any) {
+                  Alert.alert("Error", error.message || "An unexpected error occurred.");
+                }
+              }
+            }
+          ]
+        )
   };
 
   return (
