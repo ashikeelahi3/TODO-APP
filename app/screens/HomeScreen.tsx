@@ -33,13 +33,14 @@ export default function HomeScreen({ navigation }: any) {
 
     // Filter notes by title
     const filtered = notes.filter((note) =>
-      note.title.toLowerCase().includes(query.toLowerCase())
+      note.title.toLowerCase().includes(query.toLowerCase()) ||
+      note.description.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredNotes(filtered);
   };
 
   const handleDelete = (id: string) => {
-    const noteToDelete = notes.find((note) => note.id === id);
+    const noteToDelete:any = notes.find((note) => note.id === id);
     setDeletedNote(noteToDelete);
     
     Alert.alert(
@@ -49,7 +50,7 @@ export default function HomeScreen({ navigation }: any) {
         {
           text: "Undo",
           onPress: () => {
-            
+
             if (deletedNote) {
               setNotes((prevNotes) => [deletedNote, ...prevNotes]); // Restore the note
               setFilteredNotes((prevNotes) => [deletedNote, ...prevNotes]); // Restore to filtered notes
@@ -97,6 +98,7 @@ export default function HomeScreen({ navigation }: any) {
               id={note.id}
               title={note.title}
               description={note.description}
+              searchQuery={searchQuery}
               onDelete={handleDelete}
               onEdit={() => navigation.navigate("EditNote", { noteId: note.id })}
             />

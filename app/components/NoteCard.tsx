@@ -7,11 +7,12 @@ interface NoteCardProps {
   id: string;
   title: string;
   description: string;
+  searchQuery: string;
   onDelete: (id: string) => void;
   onEdit: () => void; // Callback to navigate to edit screen
 }
 
-export default function NoteCard({ id, title, description, onDelete, onEdit }: NoteCardProps) {
+export default function NoteCard({ id, title, description, searchQuery, onDelete, onEdit }: NoteCardProps) {
   const { colors } = useTheme();
 
   const handleDelete = async () => {
@@ -32,6 +33,21 @@ export default function NoteCard({ id, title, description, onDelete, onEdit }: N
     );
   };
 
+  // Function to highlight matching text
+  const highlightText = (text: string, query: string) => {
+    if (!query) return text;
+
+    const regex = new RegExp(`(${query})`, "gi");
+    const parts = text.split(regex);
+
+    return parts.map((part, index) => 
+    part.toLowerCase() === query.toLowerCase() ? (
+      <Text key={index} style={{ backgroundColor: colors.primary, color: colors.background }}>{part}</Text>
+    ):(
+      part
+    ))
+  }
+
   return (
     <View
       className="rounded-lg p-4 shadow-md mb-4"
@@ -41,10 +57,10 @@ export default function NoteCard({ id, title, description, onDelete, onEdit }: N
       }}
     >
       <Text className="text-lg font-bold mb-2" style={{ color: colors.text }}>
-        {title}
+        {highlightText(title, searchQuery)}
       </Text>
       <Text className="text-base mb-4" style={{ color: colors.text }}>
-        {description}
+        {highlightText(description, searchQuery)}
       </Text>
       <View className="flex-row justify-between">
         <Button title="Edit" onPress={onEdit} color={colors.primary} />
