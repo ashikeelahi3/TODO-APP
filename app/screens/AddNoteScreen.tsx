@@ -12,13 +12,19 @@ export default function AddNoteScreen() {
   const { colors } = useTheme();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [isNewNote, setIsNewNote] = useState(true);
   const navigation = useNavigation();
 
   // Debounced autosave function
   const autosave = useCallback(
     debounce(async (note: Note) => {
       try {
-        await NoteService.addNote(note);
+        if (isNewNote) {
+          await NoteService.addNote(note); // Create a new note
+          setIsNewNote(false); // Mark as an existing note
+        } else {
+          await NoteService.updateNote(note); // Update the existing note
+        }
         console.log("Autosaved note:", note);
       } catch (error) {
         Alert.alert("Autosave Error", "Could not autosave the note.");
