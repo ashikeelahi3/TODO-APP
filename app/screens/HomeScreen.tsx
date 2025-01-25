@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { ScrollView, View, Text, TextInput } from "react-native";
+import { ScrollView, View, Text, TextInput, Alert } from "react-native";
 import Button from "../components/Button";
 import NoteCard from "../components/NoteCard";
 import { NoteService } from "../utils/storage";
@@ -12,6 +12,7 @@ export default function HomeScreen({ navigation }: any) {
   const [notes, setNotes] = useState<Note[]>([]);
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
   const [filteredNotes, setFilteredNotes] = useState<Note[]>([]); // State for filtered notes
+  const [deletedNote, setDeletedNote] = useState<Note | null>(null);
 
   // Fetch notes every time the screen comes into focus
   useFocusEffect(
@@ -38,8 +39,35 @@ export default function HomeScreen({ navigation }: any) {
   };
 
   const handleDelete = (id: string) => {
-    setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
-    setFilteredNotes((prevNotes) => prevNotes.filter((note) => note.id !== id)); // Update filtered list
+    const noteToDelete = notes.find((note) => note.id === id);
+    setDeletedNote(noteToDelete);
+    
+    Alert.alert(
+      "Note Deleted",
+      "You can undo this action",
+      [
+        {
+          text: "Undo",
+          onPress: () => {
+            
+            if (deletedNote) {
+              setNotes((prevNotes) => [deletedNote, ...prevNotes]); // Restore the note
+              setFilteredNotes((prevNotes) => [deletedNote, ...prevNotes]); // Restore to filtered notes
+              setDeletedNote(null); // Clear temporary storage
+            }
+          }
+        },
+        {
+          text: "OK",
+          onPress: async () => {
+            await NoteService.deleteNote(id)
+            setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+            setFilteredNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+            setDeletedNote(null)
+          }
+        }
+      ]
+    )
   };
 
   return (
